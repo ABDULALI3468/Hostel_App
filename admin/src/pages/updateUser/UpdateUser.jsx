@@ -1,16 +1,20 @@
-import "./new.scss";
+import "./updateUser.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState, useEffect } from "react";
+import { roomInputs } from "../../formSource";
+import useFetch from "../../hooks/useFetch";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// NEW IMPORTS COPIED
 import upload from "../../utils/upload";
 import newRequest from "../../utils/newRequest";
+import { useParams } from "react-router-dom";
 
-const New = ({ inputs, title }) => {
-  // const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
+const UpdateUser = ({ inputs, title }) => {
+  const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
   const [file, setFile] = useState("");
 
   const [usernameError, setUsernameError] = useState("");
@@ -21,28 +25,19 @@ const New = ({ inputs, title }) => {
 
   const [selectedState, setSelectedState] = useState("");
   const [cities, setCities] = useState([]);
+  const [city, setCity] = useState();
 
-  const [formData, setFormData] = useState({
-    country: "",
-    state: "",
-    city: "",
-  });
+  console.log(selectedState);
+  console.log(cities);
 
-  const [hostels, setHostels] = useState([]);
+  const { id } = useParams();
 
-  console.log(hostels);
+  // const [formData, setFormData] = useState({
+  //   country: "",
+  //   state: "",
+  //   city: "",
+  // });
 
-  useEffect(() => {
-    const getHostels = async () => {
-      const res = await newRequest.get(`hostels`);
-      console.log("setting hostels");
-      setHostels(res.data);
-      console.log(res.data);
-    };
-    getHostels();
-  }, []);
-
-  
   const [info, setInfo] = useState({
     username: "",
     password: "",
@@ -51,11 +46,20 @@ const New = ({ inputs, title }) => {
     city: "",
     contact: "",
     email: "",
-    type: "",
-    hostelId: "",
   });
 
   console.log(info);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const res = await newRequest.get(`/users/${id}`, {
+        withCredentials: true,
+      });
+      setInfo(res.data);
+      setCity(res.data.city);
+    };
+    getUser();
+  }, []);
 
   const handleChange = (e) => {
     setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -82,15 +86,15 @@ const New = ({ inputs, title }) => {
 
       const newUser = {
         ...info,
-        // // ...formData,
-        // type: "owner",
+        // ...formData,
+        type: "owner",
       };
 
       console.log(newUser);
 
       // await axios.post(`${BASE_URL}/auth/register`, newUser);
 
-      const res = await newRequest.post("auth/register", newUser, {
+      const res = await newRequest.put(`users/${info._id}`, newUser, {
         withCredentials: true,
       });
 
@@ -199,7 +203,17 @@ const New = ({ inputs, title }) => {
     setCities(filteredCities);
   };
 
-  // console.log(info);
+
+  /////dfvdfvfvf
+
+
+  const [selectedCity, setSelectedCity] = useState("");
+
+
+  const handleCityChange = (e) => {
+    setSelectedCity(e.target.value);
+  };
+
   return (
     <div className="new">
       <Sidebar />
@@ -224,39 +238,11 @@ const New = ({ inputs, title }) => {
               {inputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
-                  <input onChange={handleChange} type={input.type} placeholder={input.placeholder} id={input.id} />
-                  {/* {input.label === "Username" && <span>{usernameError}</span>}
-                  {input.label === "Email" && <span>{emailError}</span>} */}
+                  <input value={info[input.id]} onChange={handleChange} type={input.type} placeholder={input.placeholder} id={input.id} />
                   <span>{input.id === "username" && usernameError}</span>
                   <span>{input.id === "email" && emailError}</span>
                 </div>
               ))}
-
-              <div className="formInput">
-                <label>User Type:</label>
-                <select name="type" id="type" value={info.type} onChange={handleChange}>
-                  <option value="">Select User Type</option>
-                  <option value="owner">Owner</option>
-                  <option value="manager">Manager</option>
-                </select>
-              </div>
-
-              {info.type === "manager" && (
-                <div>
-                  <h1 className="heading">Select Hostel</h1>
-                  <select onChange={handleChange} id="hostelId">
-                    <option value="">Select Hostel!</option>
-                    {hostels?.length > 0 &&
-                      hostels?.map((hostel, index) => {
-                        return (
-                          <option key={hostel._id} value={hostel._id}>
-                            {hostel.name}
-                          </option>
-                        );
-                      })}
-                  </select>
-                </div>
-              )}
 
               <div className="formInput">
                 <label>Country:</label>
@@ -272,7 +258,7 @@ const New = ({ inputs, title }) => {
                   name="state"
                   id="state"
                   // value={formData.state}
-                  value={selectedState}
+                  value={info.state || selectedState}
                   onChange={(e) => {
                     handleChange(e);
                     handleStateChange(e);
@@ -290,9 +276,8 @@ const New = ({ inputs, title }) => {
                 </select>
               </div>
 
-              <div className="formInput">
+              {/* <div className="formInput">
                 <label>City:</label>
-                {/* <input type="text" name="city" value={formData.city} onChange={handleChange} /> */}
                 <select name="city" id="city" value={info.city} onChange={handleChange}>
                   <option value="">Select a city</option>
                   {cities.map((city, index) => (
@@ -300,7 +285,26 @@ const New = ({ inputs, title }) => {
                       {city}
                     </option>
                   ))}
-                  ``
+                </select>
+              </div> */}
+
+              <div className="formInput">
+                <label>City:</label>
+                <select name="city" id="city" value={selectedCity} onChange={handleCityChange}>
+                  <option value="">Select a city</option>
+                  {cities.map((city, index) => (
+                    <option key={index} value={city.toLowerCase()}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="formInput">
+                <label>City:</label>
+                <select name="city" id="city" value={info.city}>
+                  <option value="">Select a city</option>
+                  <option value={info.city.toLowerCase()}>{info.city}</option>
                 </select>
               </div>
 
@@ -313,4 +317,4 @@ const New = ({ inputs, title }) => {
   );
 };
 
-export default New;
+export default UpdateUser;

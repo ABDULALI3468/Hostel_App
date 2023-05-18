@@ -1,8 +1,8 @@
-import "./newHotel.scss";
+import "../newHotel/newHotel.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { hotelInputs } from "../../formSource";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
@@ -13,8 +13,9 @@ import { useNavigate } from "react-router-dom";
 // import axios from "axios";
 import upload from "../../utils/upload";
 import newRequest from "../../utils/newRequest";
+import { useParams } from "react-router-dom";
 
-const NewHotel = () => {
+const UpdateHotel = () => {
   const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
   // const [files, setFiles] = useState("");
   const [info, setInfo] = useState({});
@@ -67,9 +68,13 @@ const NewHotel = () => {
   };
 
   // CREATE COMP
+  const { id } = useParams();
+
   // SELECT STATE AND CITIES
   const [selectedState, setSelectedState] = useState("");
   const [cities, setCities] = useState([]);
+
+  console.log(cities);
 
   const [files, setFiles] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -79,7 +84,7 @@ const NewHotel = () => {
     name: "",
     cat: "",
     country: "",
-    state: "",
+    state: selectedState,
     city: "",
     address: "",
     photos: [],
@@ -91,8 +96,7 @@ const NewHotel = () => {
     hostel_size: "",
     rent_period: "",
     condition: "",
-    // mess: false,
-    mess: "",
+    mess: false,
     floors: "",
   });
 
@@ -129,47 +133,21 @@ const NewHotel = () => {
     pets_allowed: false,
   });
 
-  const handleUpload = async () => {
-    if (files.length > 0 && files.length <= 3) {
-      setUploading(true);
+  const handleStateChange = (value, event) => {
+    console.log("RUNNING");
+    // const state = value || event?.target.value;
 
-      try {
-        const images = await Promise.all(
-          [...files].map(async (file) => {
-            const url = await upload(file);
-            return url;
-          })
-        );
-        setUploading(false);
-
-        setFormData((prevData) => ({
-          ...prevData,
-          photos: images,
-        }));
-
-        setUploaded(true);
-      } catch (err) {
-        console.log(err);
-      }
+    let state;
+    if (value) {
+      state = value;
+    } else if (event && event.target.value) {
+      state = event.target.value;
     } else {
-      alert("You files need to be in a range of min 0 to max 3!");
+      state = "";
     }
-  };
 
-  console.log(formData);
+    console.log(state || "no state available");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  console.log(selectedState);
-
-  const handleStateChange = (event) => {
-    const state = event.target.value;
     setSelectedState(state);
     // Filter cities based on selected state
     let filteredCities = [];
@@ -241,7 +219,7 @@ const NewHotel = () => {
         "Wazirabad",
       ];
     } else if (state === "sindh") {
-      filteredCities = ["Badin", "Dadu", "Ghotki", "Hala", "Hyderabad", "Jacobabad", "Jamshoro", "Karachi", "Khairpur", "Larkana", "Mirpur Khas", "Mithi", "Nawabshah", "Ratodero", "Sanghar", "Shikarpur", "Sukkar", "Tando Adam", "Thatta", "Karachi"];
+      filteredCities = ["Badin", "Dadu", "Ghotki", "Hala", "Hyderabad", "Jacobabad", "Jamshoro", "Karachi", "Khairpur", "Larkana", "Mirpur Khas", "Mithi", "Nawabshah", "Ratodero", "Sanghar", "Shikarpur", "Sukkar", "Tando Adam", "Thatta"];
     } else if (state === "azad kashmir") {
       filteredCities = ["Bagh", "Bhimber", "Mirpur", "Muzaffarabad", "Pallandri"];
     } else if (state === "fata") {
@@ -255,8 +233,64 @@ const NewHotel = () => {
     } else if (state === "balochistan") {
       filteredCities = ["Bela", "Gwadar", "Jiwani", "Kalat", "Khuzdar", "Lasbela", "Loralai", "Ormara", "Pasni", "Quetta"];
     }
+
+    console.log(filteredCities);
     setCities(filteredCities);
   };
+
+  console.log(formData);
+  console.log(facilities);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log(`hostels/find/${id}`);
+      const res = await newRequest.get(`hostels/find/${id}`);
+      console.log(res.data);
+      setFormData(res.data);
+      {
+        res.data?.general_facilities && setFacilities(res.data.general_facilities);
+      }
+    };
+    fetchData();
+    handleStateChange(formData.state);
+    console.log("abc");
+  }, [formData.state]);
+
+  const handleUpload = async () => {
+    if (files.length > 0 && files.length <= 3) {
+      setUploading(true);
+
+      try {
+        const images = await Promise.all(
+          [...files].map(async (file) => {
+            const url = await upload(file);
+            return url;
+          })
+        );
+        setUploading(false);
+
+        setFormData((prevData) => ({
+          ...prevData,
+          photos: images,
+        }));
+
+        setUploaded(true);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      alert("You files need to be in a range of min 0 to max 3!");
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
 
   const handleFacilitiesChange = (e) => {
     const { name, checked } = e.target;
@@ -268,9 +302,7 @@ const NewHotel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (formData.photos.length === 0) {
-    //   console.log("UPLOAD IMAGES FIRST");
-    // } else {
+
     const data = {
       ...formData,
       general_facilities: facilities,
@@ -278,20 +310,13 @@ const NewHotel = () => {
     console.log(data);
     try {
       // newRequest.post("/reviews", review);
-      const res = await newRequest.post(
-        "hostels",
-        data
-        // , {
-        //   withCredentials: true
-        // }
-      );
+      const res = await newRequest.put(`http://localhost:8800/api/hostels/${id}`, data);
       console.log(res);
       // console.log(res.data);
     } catch (err) {
       console.log(err);
       // console.log(err.response.data);
     }
-    // }
   };
 
   return (
@@ -303,24 +328,12 @@ const NewHotel = () => {
           <h1>Add New Hostel</h1>
         </div>
         <div className="bottom">
-          {/* <div className="left">
-            <img src={files ? URL.createObjectURL(files[0]) : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"} alt="" />
-          </div> */}
 
           <div className="right">
-            {/* <form> */}
-            {/* <div className="formInput">
-                <label htmlFor="file">
-                  Image: <DriveFolderUploadOutlinedIcon className="icon" />
-                </label>
-                <input type="file" id="file" multiple onChange={(e) => setFiles(e.target.files)} style={{ display: "none" }} />
-              </div> */}
 
-            {/* {hotelInputs.map((input) => ( */}
-            {/* <div className="formInput" key={input.id}> */}
+
+
             <div className="formInput">
-              {/* <label>{input.label}</label> */}
-              {/* <input id={input.id} onChange={handleChange} type={input.type} placeholder={input.placeholder} /> */}
 
               <form onSubmit={handleSubmit}>
                 <div className="details">
@@ -368,7 +381,6 @@ const NewHotel = () => {
 
                   <label>
                     City:
-                    {/* <input type="text" name="city" value={formData.city} onChange={handleChange} /> */}
                     <select name="city" value={formData.city} onChange={handleChange}>
                       <option value="">Select a city</option>
                       {cities.map((city, index) => (
@@ -383,15 +395,6 @@ const NewHotel = () => {
                     <input type="text" name="address" value={formData.address} onChange={handleChange} />
                   </label>
 
-                  <div className="photos">
-                    <label>
-                      Photos:
-                      <input type="file" name="photos" multiple onChange={(e) => setFiles(e.target.files)} />
-                    </label>
-                    <button disabled={uploading || uploaded} type="submit" onClick={handleUpload}>
-                      UPLOAD PHOTOS
-                    </button>
-                  </div>
 
                   <label>
                     Description:
@@ -598,9 +601,7 @@ const NewHotel = () => {
                 </div>
 
                 <div>
-                  <button type="submit" disabled={formData.photos.length === 0}>
-                    SUBMIT THE FORM
-                  </button>
+                  <button type="submit">SUBMIT THE FORM</button>
                 </div>
               </form>
             </div>
@@ -639,4 +640,4 @@ const NewHotel = () => {
   );
 };
 
-export default NewHotel;
+export default UpdateHotel;

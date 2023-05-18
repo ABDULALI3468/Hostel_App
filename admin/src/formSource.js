@@ -12,7 +12,7 @@ export const userInputs = [
     placeholder: "john_doe@gmail.com",
   },
   {
-    id: "phone",
+    id: "contact",
     label: "Phone",
     type: "text",
     placeholder: "+1 234 567 89",
@@ -22,18 +22,18 @@ export const userInputs = [
     label: "Password",
     type: "password",
   },
-  {
-    id: "country",
-    label: "Country",
-    type: "text",
-    placeholder: "USA",
-  },
-  {
-    id: "city",
-    label: "City",
-    type: "text",
-    placeholder: "USA",
-  },
+  // {
+  //   id: "country",
+  //   label: "Country",
+  //   type: "text",
+  //   placeholder: "USA",
+  // },
+  // {
+  //   id: "city",
+  //   label: "City",
+  //   type: "text",
+  //   placeholder: "USA",
+  // },
 ];
 
 export const productInputs = [

@@ -3,7 +3,7 @@ export const userColumns = [
   {
     field: "user",
     headerName: "User",
-    width: 230,
+    width: 120,
     renderCell: (params) => {
       return (
         <div className="cellWithImg">
@@ -16,57 +16,81 @@ export const userColumns = [
   {
     field: "email",
     headerName: "Email",
-    width: 230,
+    width: 200,
   },
 
-  {
-    field: "country",
-    headerName: "Country",
-    width: 100,
-  },
-  {
-    field: "city",
-    headerName: "City",
-    width: 100,
-  },
-  {
-    field: "phone",
-    headerName: "Phone",
-    width: 100,
-  },
-];
-
-export const hotelColumns = [
-  { field: "_id", headerName: "ID", width: 250 },
-  {
-    field: "name",
-    headerName: "Name",
-    width: 150,
-  },
+  // {
+  //   field: "country",
+  //   headerName: "Country",
+  //   width: 100,
+  // },
   {
     field: "type",
     headerName: "Type",
     width: 100,
   },
   {
-    field: "title",
-    headerName: "Title",
-    width: 230,
+    field: "contact",
+    headerName: "Phone",
+    width: 100,
+  },
+];
+
+// export const hotelColumns = [
+//   { field: "_id", headerName: "ID", width: 250 },
+//   {
+//     field: "name",
+//     headerName: "Name",
+//     width: 150,
+//   },
+//   {
+//     field: "type",
+//     headerName: "Type",
+//     width: 100,
+//   },
+//   {
+//     field: "title",
+//     headerName: "Title",
+//     width: 230,
+//   },
+//   {
+//     field: "city",
+//     headerName: "City",
+//     width: 100,
+//   },
+// ];
+
+export const hotelColumns = [
+  // { field: "_id", headerName: "ID", width: 250 },
+  { field: "_id", headerName: "ID", width: 100 },
+  {
+    field: "name",
+    headerName: "Name",
+    width: 150,
+  },
+  {
+    field: "cat",
+    headerName: "Category",
+    width: 100,
   },
   {
     field: "city",
     headerName: "City",
     width: 100,
   },
+  {
+    field: "cheapestPrice",
+    headerName: "Cheapest Price",
+    width: 100,
+  },
 ];
 
 export const roomColumns = [
+  // {
+  //   columnName: "room_column",
+  // },
   { field: "_id", headerName: "ID", width: 70 },
-  {
-    field: "title",
-    headerName: "Title",
-    width: 230,
-  },
+
   {
     field: "desc",
     headerName: "Description",
@@ -81,5 +105,10 @@ export const roomColumns = [
     field: "maxPeople",
     headerName: "Max People",
     width: 100,
+  },
+  {
+    field: "mess",
+    headerName: "Mess",
+    width: 120,
   },
 ];

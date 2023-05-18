@@ -11,6 +11,8 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import SettingsSystemDaydreamOutlinedIcon from "@mui/icons-material/SettingsSystemDaydreamOutlined";
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import ChatIcon from "@mui/icons-material/Chat";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive"
 import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
@@ -41,10 +43,10 @@ const Sidebar = () => {
               <span>Users</span>
             </li>
           </Link>
-          <Link to="/hotels" style={{ textDecoration: "none" }}>
+          <Link to="/hostels" style={{ textDecoration: "none" }}>
             <li>
               <StoreIcon className="icon" />
-              <span>Hotels</span>
+              <span>Hostels</span>
             </li>
           </Link>
           <Link to="/rooms" style={{ textDecoration: "none" }}>
@@ -53,11 +55,20 @@ const Sidebar = () => {
               <span>Rooms</span>
             </li>
           </Link>
-          <li>
-            <LocalShippingIcon className="icon" />
-            <span>Delivery</span>
-          </li>
-          <p className="title">USEFUL</p>
+          <Link to="/pending" style={{ textDecoration: "none" }}>
+            <li>
+              <NotificationsActiveIcon className="icon" />
+              <span>Room Queries</span>
+            </li>
+          </Link>
+          <Link to="/messages" style={{ textDecoration: "none" }}>
+            <li>
+              {/* <LocalShippingIcon className="icon" /> */}
+              <ChatIcon className="icon" />
+              <span>Chats</span>
+            </li>
+          </Link>
+          {/* <p className="title">USEFUL</p>
           <li>
             <InsertChartIcon className="icon" />
             <span>Stats</span>
@@ -87,7 +98,7 @@ const Sidebar = () => {
           <li>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>
-          </li>
+          </li> */}
         </ul>
       </div>
       <div className="bottom">

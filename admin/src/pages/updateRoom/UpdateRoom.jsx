@@ -1,4 +1,4 @@
-import "./newRoom.scss";
+import "./updateRoom.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
@@ -11,60 +11,25 @@ import { useNavigate } from "react-router-dom";
 // NEW IMPORTS COPIED
 import upload from "../../utils/upload";
 import newRequest from "../../utils/newRequest";
+import { useParams } from "react-router-dom";
 
-const NewRoom = () => {
-  // const URL = "https://booking-com-api-o1kq.onrender.com/api";
-  // const [info, setInfo] = useState({});
-  // const [hotelId, setHotelId] = useState(undefined);
-  // const [rooms, setRooms] = useState([]);
-  // const [fetching, setFetching] = useState(false);
-
-  // const navigate = useNavigate();
-  // const { data, loading, error } = useFetch(`${URL}/hostels`);
-
-  // const handleChange = (e) => {
-  //   setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
-  // };
-
-  // const handleClick = async (e) => {
-  //   e.preventDefault();
-  //   setFetching(true);
-  //   const roomNumbers = rooms.split(",").map((room) => ({ number: room }));
-  //   try {
-  //     await axios.post(`${URL}/rooms/${hotelId}`, { ...info, roomNumbers });
-  //     setFetching(false);
-  //     navigate("/rooms");
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  // COPIED CODE FROM INTEGRATION FOLDER
-
-  const [selectedHostel, setSelectedHostel] = useState("");
-  const [files, setFiles] = useState("");
-  console.log(files);
-  const [uploading, setUploading] = useState(false);
-  const [uploaded, setUploaded] = useState(false);
-  const [hostels, setHostels] = useState([]);
+const UpdateRoom = () => {
+  const { id } = useParams();
 
   const [dataLoaded, setDataLoaded] = useState(false);
-
   const [formData, setFormData] = useState({
-    hostelId: "",
-    type: "",
+    // hostelId: "",
+    // type: "",
     floor_number: "",
     price: 0,
     maxPeople: 0,
-    hostelites: [],
-    status: [],
+    // hostelites: [],
+    // status: [],
     desc: "",
     photos: [],
     rent_period: "",
     condition: "",
-    // mess: false,
     mess: "",
-    // roomNumbers: [],
     roomNumber: "",
     room_facilities: {
       electricity_backup: false,
@@ -101,46 +66,15 @@ const NewRoom = () => {
   });
 
   console.log(formData);
-  console.log(files);
 
   useEffect(() => {
-    const getHostels = async () => {
-      const res = await newRequest.get("/hostels");
-
-      setHostels(res.data);
+    const getRoom = async () => {
+      const res = await newRequest.get(`/rooms/${id}`);
+      setFormData(res.data);
       setDataLoaded(true);
     };
-    getHostels();
+    getRoom();
   }, []);
-
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (files.length > 0 && files.length <= 5) {
-      setUploading(true);
-
-      try {
-        const images = await Promise.all(
-          [...files].map(async (file) => {
-            const url = await upload(file);
-            return url;
-          })
-        );
-        setUploading(false);
-
-        setFormData((prevData) => ({
-          ...prevData,
-          photos: images,
-        }));
-
-        setUploaded(true);
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      // console.log(err);
-      alert("You can upload a maximum of 5 images!");
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -167,7 +101,7 @@ const NewRoom = () => {
     //   console.log("UPLOAD IMAGES FIRST");
     // } else {
     try {
-      const res = await newRequest.post(`rooms/${formData.hostelId}`, formData, {
+      const res = await newRequest.put(`rooms/${formData._id}`, formData, {
         withCredentials: true,
       });
       console.log(res);
@@ -187,55 +121,10 @@ const NewRoom = () => {
         </div>
         <div className="bottom">
           <div className="right">
-            {/* <form>
-              {roomInputs.map((input) => (
-                <div className="formInput" key={input.id}>
-                  <label>{input.label}</label>
-                  <input id={input.id} type={input.type} placeholder={input.placeholder} onChange={handleChange} />
-                </div>
-              ))}
-              <div className="formInput">
-                <label>Rooms</label>
-                <textarea onChange={(e) => setRooms(e.target.value)} placeholder="give comma between room numbers." />
-              </div>
-              <div className="formInput">
-                <label>Choose a hotel</label>
-                <select id="hotelId" onChange={(e) => setHotelId(e.target.value)}>
-                  {loading
-                    ? "loading"
-                    : data &&
-                      data.map((hotel) => (
-                        <option key={hotel._id} value={hotel._id}>
-                          {hotel.name}
-                        </option>
-                      ))}
-                </select>
-              </div>
-              <button onClick={handleClick}>{fetching ? "Loading" : "Send"}</button>
-            </form> */}
-
             <form onSubmit={handleSubmit}>
               <button type="submit">SUBMIT THE FORM</button>
-              <div>
-                <label>
-                  Hostel:
-                  <select name="hostelId" value={formData.hostelId} onChange={handleChange}>
-                    <option value="">Select a hostel</option>
-                    {hostels?.length > 0 &&
-                      hostels?.map((hostel, index) => {
-                        return (
-                          <option key={hostel._id} value={hostel._id}>
-                            {hostel.name}
-                          </option>
-                        );
-                      })}
-                  </select>
-                </label>
-                {/* <label>
-              Type:
-              <input type="text" name="type" value={formData.type} onChange={handleChange} />
-            </label> */}
 
+              <div>
                 <label>
                   Floors:
                   <select name="floor_number" value={formData.floor_number} onChange={handleChange}>
@@ -273,11 +162,7 @@ const NewRoom = () => {
                   Description:
                   <textarea name="desc" value={formData.desc} onChange={handleChange} />
                 </label>
-                <label>
-                  Photos:
-                  <input type="file" name="photos" multiple onChange={(e) => setFiles(e.target.files)} />
-                </label>
-                <button onClick={handleUpload}>UPLOAD IMAGES</button>
+
                 <label>
                   Rent Period:
                   <select name="rent_period" value={formData.rent_period} onChange={handleChange}>
@@ -316,7 +201,7 @@ const NewRoom = () => {
 
                 <label>
                   Room Numbers:
-                  <input type="text" name="roomNumber" value={formData.roomNumber} onChange={handleChange} />
+                  <input type="text" name="roomNumbers" value={formData.roomNumber} onChange={handleChange} />
                 </label>
               </div>
 
@@ -450,4 +335,4 @@ const NewRoom = () => {
   );
 };
 
-export default NewRoom;
+export default UpdateRoom;

@@ -2,14 +2,14 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-// import { AuthContext } from "../../context/AuthContext";
 import "./login.scss";
 
 const Login = () => {
-  const URL = "https://booking-com-api-o1kq.onrender.com/api";
+  const URL = "http://localhost:8800/api";
   const [credentials, setCredentials] = useState({
     username: undefined,
     password: undefined,
+    type: "owner",
   });
 
   const { loading, error, dispatch } = useContext(AuthContext);
@@ -24,8 +24,14 @@ const Login = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-      const res = await axios.post(`${URL}/auth/login`, credentials);
-      if (res.data.isAdmin) {
+
+      const res = await axios.post("http://localhost:8800/api/auth/login", credentials, {
+        withCredentials: true,
+      });
+
+      console.log(res);
+
+      if (res.data.type !== "user") {
         dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
 
         navigate("/");
@@ -36,7 +42,7 @@ const Login = () => {
         });
       }
     } catch (err) {
-      dispatch({ type: "LOGIN_FAILURE", payload: err.response.data });
+      dispatch({ type: "LOGIN_FAILURE", payload: err.response });
     }
   };
 

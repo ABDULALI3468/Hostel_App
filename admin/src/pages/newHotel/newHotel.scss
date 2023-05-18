@@ -14,8 +14,8 @@
       display: flex;
 
       h1 {
-        color: lightgray;
-        font-size: 20px;
+        color: grey;
+        font-size: 27px;
       }
 
       .left {
@@ -36,14 +36,69 @@
 
         form {
           display: flex;
-          flex-wrap: wrap;
+          flex-direction: column;
+          // flex-wrap: wrap;
           gap: 30px;
           justify-content: space-between;
 
-          .selectRooms{
+          .details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+
+            .photos {
+              display: flex;
+              justify-content: space-around;
+            }
+
+            label,
+            select {
+              display: flex;
+              flex-direction: column;
+            }
+
+            label {
+              margin: 2rem;
+              width: calc(50% - 5rem);
+            }
+
+            select {
+              width: 100%;
+            }
+
+            // .details:nth-child(even) {
+            //   justify-self: flex-end;
+            // }
+          }
+
+          .general_facilities_container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+
+            .general_facilities {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 20px;
+
+              label {
+                margin: 10px 20px 10px 20px;
+              }
+
+              input {
+                margin-right: 6px;
+              }
+            }
+          }
+
+          button:disabled {
+            cursor: not-allowed;
+          }
+
+          .selectRooms {
             width: 100%;
 
-            select{
+            select {
               width: 100%;
               padding: 10px;
             }

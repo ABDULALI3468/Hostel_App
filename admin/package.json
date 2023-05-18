@@ -21,7 +21,9 @@
     "react-scripts": "5.0.0",
     "recharts": "^2.1.9",
     "sass": "^1.49.9",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "moment": "^2.29.4",
+    "@tanstack/react-query": "^4.29.5"
   },
   "scripts": {
     "dev": "vite",

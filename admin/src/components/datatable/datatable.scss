@@ -1,8 +1,8 @@
 .datatable {
   height: 600px;
   padding: 20px;
-  
-  .datatableTitle{
+
+  .datatableTitle {
     width: 100%;
     font-size: 24px;
     color: gray;
@@ -11,7 +11,7 @@
     align-items: center;
     justify-content: space-between;
 
-    .link{
+    .link {
       text-decoration: none;
       color: green;
       font-size: 16px;
@@ -66,7 +66,15 @@
       border: 1px dotted rgba(0, 0, 139, 0.596);
       cursor: pointer;
     }
-    
+
+    .updateButton {
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: #8d0097;
+      border: 1px dotted rgb(209 42 188 / 60%);
+      cursor: pointer;
+    }
+
     .deleteButton {
       padding: 2px 5px;
       border-radius: 5px;
@@ -75,4 +83,30 @@
       cursor: pointer;
     }
   }
+}
+
+.heading {
+  color: grey;
+  margin-bottom: 2rem;
+}
+
+select {
+  padding: 20px 10px;
+  margin-bottom: 1rem;
+  width: 12rem;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: white;
+  color: grey;
+  font-size: 16px;
+  font-weight: 400;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+select option {
+  color: grey;
+  background-color: white;
+  font-size: 16px;
+  font-weight: 400;
 }
