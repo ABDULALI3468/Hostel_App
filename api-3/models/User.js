@@ -18,6 +18,12 @@ const UserSchema = new mongoose.Schema(
     img: {
       type: String,
     },
+    country: {
+      type: String,
+    },
+    state: {
+      type: String,
+    },
     city: {
       type: String,
     },
@@ -33,7 +39,7 @@ const UserSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["user", "owner", "manager"],
+      enum: ["user", "owner", "manager", "admin"],
       default: "user",
       required: true,
     },

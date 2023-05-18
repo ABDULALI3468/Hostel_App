@@ -1,4 +1,4 @@
-import createError from "../utils/error.js";
+import { createError } from "../utils/error.js";
 import Message from "../models/message.model.js";
 import Conversation from "../models/conversation.model.js";
 
@@ -14,13 +14,15 @@ export const createMessage = async (req, res, next) => {
       { id: req.body.conversationId },
       {
         $set: {
-          readBySeller: req.isSeller,
-          readByBuyer: !req.isSeller,
+          readBySeller: req.user.isSeller,
+          readByBuyer: !req.user.isSeller,
           lastMessage: req.body.desc,
         },
       },
       { new: true }
     );
+
+    console.log(req.user.isSeller);
 
     res.status(201).send(savedMessage);
   } catch (err) {

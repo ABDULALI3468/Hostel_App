@@ -2,7 +2,6 @@ import Hostel from "../models/Hostel.js";
 import Room from "../models/Room.js";
 
 export const createHostel = async (req, res, next) => {
-
   const newHostel = new Hostel({
     createdBy: req.user.id,
     ...req.body,
@@ -22,8 +21,10 @@ export const updateHostel = async (req, res, next) => {
     return res.status(404).json({ message: "hostel not found" });
   }
 
-  if (hostel.createdBy.toString() !== req.user.id.toString() && hostel.managerId.toString() !== req.user.id.toString()) {
-    return res.status(401).json({ message: "You are not authorized to perform this action" });
+  if (!req.user.type === "admin") {
+    if (hostel.createdBy.toString() !== req.user.id.toString() && hostel.managerId?.toString() !== req.user.id.toString()) {
+      return res.status(401).json({ message: "You are not authorized to perform this action" });
+    }
   }
 
   try {
@@ -40,8 +41,10 @@ export const deleteHostel = async (req, res, next) => {
     return res.status(404).json({ message: "hostel not found" });
   }
 
-  if (hostel.createdBy.toString() !== req.user.id.toString() && hostel.managerId.toString() !== req.user.id.toString()) {
-    return res.status(401).json({ message: "You are not authorized to perform this action" });
+  if (!req.user.type === "admin") {
+    if (hostel.createdBy.toString() !== req.user.id.toString() && hostel.managerId.toString() !== req.user.id.toString()) {
+      return res.status(401).json({ message: "You are not authorized to perform this action" });
+    }
   }
 
   try {
@@ -50,10 +53,12 @@ export const deleteHostel = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+
+  // DONT FORGET TO DELTE ALSO ALL THE ROOMS
 };
 export const getHostel = async (req, res, next) => {
   try {
-    const hostel = await Hostel.findById(req.params.id);
+    const hostel = await Hostel.findById(req.params.id).populate("rooms");
     if (!hostel) {
       return res.status(404).json({ message: "hostel not found" });
     }
@@ -128,5 +133,5 @@ export const getHostelsByOwner = async (req, res) => {
   }
 };
 
-
 // <feature:0>  LOCATION </feature:0>
+ // DONT FORGET TO DELTE ALSO ALL THE ROOMS when delteing hostel

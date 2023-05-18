@@ -4,9 +4,21 @@ import Hostel from "../models/Hostel.js";
 import { verifyToken, verifyAdmin } from "../utils/verifyToken.js";
 const router = express.Router();
 
-router.post("/", verifyAdmin, createHostel);
-router.put("/:id", verifyAdmin, updateHostel);
-router.delete("/:id", verifyAdmin, deleteHostel);
+
+// router.post("/", verifyAdmin, createHostel);
+// router.put("/:id", verifyAdmin, updateHostel);
+// router.delete("/:id", verifyAdmin, deleteHostel);
+// router.get("/find/:id", getHostel);
+// router.get("/", getHostels);
+// router.get("/countByCity", countByCity);
+// router.get("/countByType", countByType);
+// router.get("/room/:id", getHostelRooms);
+// router.get("/getHostelsByOwner", verifyToken, getHostelsByOwner);
+
+
+router.post("/", verifyToken, createHostel);
+router.put("/:id", verifyToken, updateHostel);
+router.delete("/:id", verifyToken, deleteHostel);
 router.get("/find/:id", getHostel);
 router.get("/", getHostels);
 router.get("/countByCity", countByCity);

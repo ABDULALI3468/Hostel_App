@@ -7,13 +7,16 @@ const router = express.Router();
 // router.get("/getHostelsByOwner", verifyToken, getHostelsByOwner);
 
 //UPDATE
-router.put("/:id", verifyUser, updateUser);
+// router.put("/:id", verifyUser, updateUser);
+router.put("/:id", updateUser);
 
 //DELETE
-router.delete("/:id", verifyUser, deleteUser);
+// router.delete("/:id", verifyUser, deleteUser);
+router.delete("/:id", deleteUser);
 
 //GET
-router.get("/:id", verifyUser, getUser);
+// router.get("/:id", verifyUser, getUser);
+router.get("/:id", getUser);
 
 //GET ALL
 // router.get("/", verifyAdmin, getUsers);

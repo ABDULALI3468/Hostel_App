@@ -5,6 +5,8 @@ import authRoute from "./routes/auth.js";
 import usersRoute from "./routes/users.js";
 import hostelsRoute from "./routes/hostels.js";
 import roomsRoute from "./routes/rooms.js";
+import messageRoute from "./routes/message.route.js";
+import conversationsRoute from "./routes/conversation.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -35,6 +37,9 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/hostels", hostelsRoute);
 app.use("/api/rooms", roomsRoute);
+app.use("/api/conversations", conversationsRoute);
+app.use("/api/conversations", conversationsRoute);
+app.use("/api/messages", messageRoute);
 
 app.post("/send-email", sendEmail);
 

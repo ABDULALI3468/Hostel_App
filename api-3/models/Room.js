@@ -5,9 +5,9 @@ const RoomSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    type: {
+    name: {
       type: String,
-      required: true,
+      // required: true,
     },
     floor_number: {
       type: String,
@@ -25,7 +25,7 @@ const RoomSchema = new mongoose.Schema(
       type: [String],
     },
 
-    status: [{ userId: String, status: { type: String, enum: ["pending", "booked"] } }],
+    status: [{ userId: String, status: { type: String, enum: ["pending", "booked", "rejected", "approved"] } }],
 
     desc: {
       type: String,
@@ -44,9 +44,11 @@ const RoomSchema = new mongoose.Schema(
       // furnished, semi-furnished, not-furnished
     },
     mess: {
-      type: Boolean,
+      type: String,
+      enum: ["mess included", "mess not-included"],
     },
-    roomNumbers: [{ number: Number, unavailableDates: { type: [Date] } }],
+    // roomNumbers: [{ number: Number, unavailableDates: { type: [Date] } }],
+    roomNumber: String,
 
     room_facilities: {
       electricity_backup: Boolean,

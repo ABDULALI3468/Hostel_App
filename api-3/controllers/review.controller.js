@@ -3,7 +3,7 @@ import Review from "../models/review.model.js";
 import Hostel from "../models/Hostel.js";
 
 export const createReview = async (req, res, next) => {
-  if (req.isSeller) return next(createError(403, "Sellers can't create a review!"));
+  if (req.user.isSeller) return next(createError(403, "Sellers can't create a review!"));
 
   const newReview = new Review({
     userId: req.user.id,

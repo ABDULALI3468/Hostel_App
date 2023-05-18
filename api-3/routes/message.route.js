@@ -3,7 +3,7 @@ import {
   createMessage,
   getMessages,
 } from "../controllers/message.controller.js";
-import { verifyToken } from "../middleware/verifyToken.js";
+import { verifyToken } from "../utils/verifyToken.js";
 
 const router = express.Router();
 

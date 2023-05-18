@@ -31,8 +31,10 @@ export const updateRoom = async (req, res, next) => {
     return res.status(404).json({ message: "hostel not found" });
   }
 
-  if (hostel.createdBy.toString() !== req.user.id.toString() && hostel.managerId.toString() !== req.user.id.toString()) {
-    return res.status(401).json({ message: "You are not authorized to perform this action" });
+  if (!req.user.type === "admin") {
+    if (hostel.createdBy.toString() !== req.user.id.toString() && hostel.managerId.toString() !== req.user.id.toString()) {
+      return res.status(401).json({ message: "You are not authorized to perform this action" });
+    }
   }
 
   try {
@@ -51,8 +53,10 @@ export const deleteRoom = async (req, res, next) => {
     return res.status(404).json({ message: "hostel not found" });
   }
 
-  if (hostel.createdBy.toString() !== req.user.id.toString() && hostel.managerId.toString() !== req.user.id.toString()) {
-    return res.status(401).json({ message: "You are not authorized to perform this action" });
+  if (!req.user.type === "admin") {
+    if (hostel.createdBy.toString() !== req.user.id.toString() && hostel.managerId.toString() !== req.user.id.toString()) {
+      return res.status(401).json({ message: "You are not authorized to perform this action" });
+    }
   }
 
   try {
@@ -118,6 +122,7 @@ export const bookRoom = async (req, res) => {
   const updatedRoom = await Room.updateOne({ _id: req.params.id }, { $push: { status: { status: "pending", userId: userId } } });
   res.json(updatedRoom);
 };
+
 export const getPendingRooms = async (req, res) => {
   const userId = req.user.id;
 
@@ -126,21 +131,25 @@ export const getPendingRooms = async (req, res) => {
       $or: [{ managerId: userId }, { createdBy: userId }],
     });
 
-    const pendingRooms = [];
+    const pendingRoomsByHostel = {};
 
     for (const hostel of hostels) {
       const rooms = await Room.find({
         hostelId: hostel.id,
-        status: { $elemMatch: { status: "pending" } },
+        // status: { $elemMatch: { status: "pending" } },
+        status: { $elemMatch: { status: { $in: ["pending", "approved", "booked", "rejected"] } } },
       });
 
       for (const room of rooms) {
-        const bookedBy = await User.findById(room.status[0].userId);
-        pendingRooms.push([room, bookedBy]);
+        if (!pendingRoomsByHostel[hostel.id]) {
+          pendingRoomsByHostel[hostel.id] = [];
+        }
+        pendingRoomsByHostel[hostel.id].push(room);
       }
     }
 
-    res.json(pendingRooms);
+    console.log(hostels);
+    res.json(pendingRoomsByHostel);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error });
@@ -161,32 +170,37 @@ export const getUserRooms = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
-export const approvePendingRequest = async (req, res) => {
-  const roomId = req.params.id;
-  const userId = req.body.userId;
 
-  try {
-    const room = await Room.findById(roomId);
+// export const approvePendingRequest = async (req, res) => {
+//   const roomId = req.params.id;
+//   const userId = req.body.userId;
+//   const status = req.body.status;
 
-    if (!room) {
-      return res.status(404).json({ error: "Room not found" });
-    }
+//   try {
+//     const room = await Room.findById(roomId);
 
-    const pendingStatusIndex = room.status.findIndex((s) => s.status === "pending" && s.userId === userId);
+//     if (!room) {
+//       return res.status(404).json({ error: "Room not found" });
+//     }
 
-    if (pendingStatusIndex === -1) {
-      return res.status(400).json({ error: "Room is not pending for the specified user" });
-    }
+//     // const pendingStatusIndex = room.status.findIndex((s) => s.status === "pending" && s.userId === userId);
+//     const pendingStatusIndex = room.status.findIndex((s) =>  s.userId === userId);
 
-    room.status[pendingStatusIndex].status = "booked";
-    await Room.updateOne({ _id: roomId }, { $set: { status: room.status } });
+//     if (pendingStatusIndex === -1) {
+//       return res.status(400).json({ error: "Room is not pending for the specified user" });
+//     }
 
-    res.json({ message: "Room booked successfully" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Server error" });
-  }
-};
+//     // room.status[pendingStatusIndex].status = "booked";
+
+//     room.status[pendingStatusIndex].status = status;
+//     await Room.updateOne({ _id: roomId }, { $set: { status: room.status } });
+
+//     res.json({ message: "Room booked successfully" });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
 
 // export default bookRoom;
 
@@ -195,3 +209,40 @@ export const approvePendingRequest = async (req, res) => {
 
 // 1- STATUS : FROM NOT-BOOKED ------> PEN`DING
 // 2-
+
+export const approvePendingRequest = async (req, res) => {
+  const roomId = req.params.id;
+  const userId = req.body.userId;
+  const status = req.body.status;
+
+  try {
+    const room = await Room.findById(roomId);
+
+    if (!room) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    const pendingStatusIndex = room.status.findIndex((s) => s.userId === userId);
+
+    if (pendingStatusIndex === -1) {
+      return res.status(400).json({ error: "Room is not pending for the specified user" });
+    }
+
+    // Check if the number of booked status objects is equal to the maxPeople property
+
+    if (status === "booked") {
+      const bookedCount = room.status.filter((s) => s.status === "booked").length;
+      if (bookedCount >= room.maxPeople) {
+        return res.status(400).json({ error: "Room is already fully booked" });
+      }
+    }
+
+    room.status[pendingStatusIndex].status = status;
+    await Room.updateOne({ _id: roomId }, { $set: { status: room.status } });
+
+    res.json({ message: "Room booked successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
