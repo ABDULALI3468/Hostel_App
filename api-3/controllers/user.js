@@ -2,7 +2,31 @@ import User from "../models/User.js";
 import Hostel from "../models/Hostel.js";
 
 export const updateUser = async (req, res, next) => {
-  try {
+  const { username, email } = req.body;
+  const { id } = req.params;
+
+  // Check if username is already taken
+  const existingUser = await User.findOne({ _id: id });
+
+  if (existingUser && username !== existingUser.username) {
+    try {
+      const existingUser = await User.findOne({ username });
+      if (existingUser) return res.status(409).json({ message: "Username is already taken" });
+    } catch (err) {
+      // next(err)
+    }
+  }
+
+  if (existingUser && email !== existingUser.email) {
+    try {
+      const existingEmail = await User.findOne({ email });
+      if (existingEmail) return res.status(409).json({ message: "Email is already taken" });
+    } catch (err) {
+      // next(err);
+    }
+  }
+
+  try {``
     const updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
     res.status(200).json(updatedUser);
   } catch (err) {
@@ -27,7 +51,7 @@ export const getUser = async (req, res, next) => {
 };
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find().sort({ updatedAt: -1 });;
+    const users = await User.find().sort({ updatedAt: -1 });
     res.status(200).json(users);
   } catch (err) {
     next(err);

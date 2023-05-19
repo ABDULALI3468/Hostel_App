@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { hotelInputs } from "../../formSource";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
+import { toast, ToastContainer } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
 
 // CREATE COMP
@@ -16,14 +17,14 @@ import newRequest from "../../utils/newRequest";
 import { useParams } from "react-router-dom";
 
 const UpdateHotel = () => {
-  const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
+  // const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
   // const [files, setFiles] = useState("");
   const [info, setInfo] = useState({});
   const [rooms, setRooms] = useState([]);
   const [fetching, setFetching] = useState(false);
   const navigate = useNavigate();
 
-  const { data, loading, error } = useFetch(`${BASE_URL}/rooms`);
+  // const { data, loading, error } = useFetch(`${BASE_URL}/rooms`);
 
   // const handleChange = (e) => {
   //   setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -256,33 +257,6 @@ const UpdateHotel = () => {
     console.log("abc");
   }, [formData.state]);
 
-  const handleUpload = async () => {
-    if (files.length > 0 && files.length <= 3) {
-      setUploading(true);
-
-      try {
-        const images = await Promise.all(
-          [...files].map(async (file) => {
-            const url = await upload(file);
-            return url;
-          })
-        );
-        setUploading(false);
-
-        setFormData((prevData) => ({
-          ...prevData,
-          photos: images,
-        }));
-
-        setUploaded(true);
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      alert("You files need to be in a range of min 0 to max 3!");
-    }
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -290,7 +264,6 @@ const UpdateHotel = () => {
       [name]: value,
     }));
   };
-
 
   const handleFacilitiesChange = (e) => {
     const { name, checked } = e.target;
@@ -309,11 +282,15 @@ const UpdateHotel = () => {
     };
     console.log(data);
     try {
-      // newRequest.post("/reviews", review);
-      const res = await newRequest.put(`http://localhost:8800/api/hostels/${id}`, data);
+      const res = await newRequest.put(`hostels/${id}`, data);
+      toast.success("Hostel Updated successfully!");
+
+      setTimeout(() => {
+        navigate(-1);
+      }, 1000);
       console.log(res);
-      // console.log(res.data);
     } catch (err) {
+      toast.error("Hostel did not updated!");
       console.log(err);
       // console.log(err.response.data);
     }
@@ -321,6 +298,8 @@ const UpdateHotel = () => {
 
   return (
     <div className="new">
+      <ToastContainer />
+
       <Sidebar />
       <div className="newContainer">
         <Navbar />
@@ -328,13 +307,8 @@ const UpdateHotel = () => {
           <h1>Add New Hostel</h1>
         </div>
         <div className="bottom">
-
           <div className="right">
-
-
-
             <div className="formInput">
-
               <form onSubmit={handleSubmit}>
                 <div className="details">
                   <label>
@@ -394,7 +368,6 @@ const UpdateHotel = () => {
                     Address:
                     <input type="text" name="address" value={formData.address} onChange={handleChange} />
                   </label>
-
 
                   <label>
                     Description:

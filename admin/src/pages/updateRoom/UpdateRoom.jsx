@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { roomInputs } from "../../formSource";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
+import { toast, ToastContainer } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
 
 // NEW IMPORTS COPIED
@@ -67,6 +68,8 @@ const UpdateRoom = () => {
 
   console.log(formData);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getRoom = async () => {
       const res = await newRequest.get(`/rooms/${id}`);
@@ -101,11 +104,14 @@ const UpdateRoom = () => {
     //   console.log("UPLOAD IMAGES FIRST");
     // } else {
     try {
-      const res = await newRequest.put(`rooms/${formData._id}`, formData, {
-        withCredentials: true,
-      });
+      const res = await newRequest.put(`rooms/${formData._id}`, formData);
+      toast.success("Room Updated successfully!");
+      setTimeout(() => {
+        navigate(-1);
+      }, 1000);
       console.log(res);
     } catch (err) {
+      toast.error("Room did not updated!");
       console.log(err);
     }
     // }
@@ -113,6 +119,8 @@ const UpdateRoom = () => {
 
   return (
     <div className="new">
+      <ToastContainer />
+
       <Sidebar />
       <div className="newContainer">
         <Navbar />

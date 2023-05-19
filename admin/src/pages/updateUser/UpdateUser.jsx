@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { roomInputs } from "../../formSource";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
+import { toast, ToastContainer } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
 
 // NEW IMPORTS COPIED
@@ -52,9 +53,7 @@ const UpdateUser = ({ inputs, title }) => {
 
   useEffect(() => {
     const getUser = async () => {
-      const res = await newRequest.get(`/users/${id}`, {
-        withCredentials: true,
-      });
+      const res = await newRequest.get(`/users/${id}`);
       setInfo(res.data);
       setCity(res.data.city);
     };
@@ -92,16 +91,18 @@ const UpdateUser = ({ inputs, title }) => {
 
       console.log(newUser);
 
-      // await axios.post(`${BASE_URL}/auth/register`, newUser);
+      const res = await newRequest.put(`users/${info._id}`, newUser);
 
-      const res = await newRequest.put(`users/${info._id}`, newUser, {
-        withCredentials: true,
-      });
+      toast.success("User updated successfully!");
 
-      navigate("/users");
+      setTimeout(() => {
+        navigate(-1);
+      }, 1000);
+
       setLoading(false);
     } catch (err) {
       console.log(err);
+      toast.error(`${err.response.data.message}`);
       if (err.response.data.message === "Email is already taken") {
         setEmailError("Email is already taken");
         setUsernameError("");
@@ -203,12 +204,9 @@ const UpdateUser = ({ inputs, title }) => {
     setCities(filteredCities);
   };
 
-
   /////dfvdfvfvf
 
-
   const [selectedCity, setSelectedCity] = useState("");
-
 
   const handleCityChange = (e) => {
     setSelectedCity(e.target.value);
@@ -216,6 +214,7 @@ const UpdateUser = ({ inputs, title }) => {
 
   return (
     <div className="new">
+      <ToastContainer />
       <Sidebar />
       <div className="newContainer">
         <Navbar />
@@ -302,7 +301,7 @@ const UpdateUser = ({ inputs, title }) => {
 
               <div className="formInput">
                 <label>City:</label>
-                <select name="city" id="city" value={info.city}>
+                <select name="city" id="" value={info.city}>
                   <option value="">Select a city</option>
                   <option value={info.city.toLowerCase()}>{info.city}</option>
                 </select>
