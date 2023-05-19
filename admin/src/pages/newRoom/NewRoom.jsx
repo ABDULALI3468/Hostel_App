@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { roomInputs } from "../../formSource";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
+import { toast, ToastContainer } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
 
 // NEW IMPORTS COPIED
@@ -19,7 +20,7 @@ const NewRoom = () => {
   // const [rooms, setRooms] = useState([]);
   // const [fetching, setFetching] = useState(false);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   // const { data, loading, error } = useFetch(`${URL}/hostels`);
 
   // const handleChange = (e) => {
@@ -127,6 +128,8 @@ const NewRoom = () => {
         );
         setUploading(false);
 
+        toast.success("Image/s Uploaded successfully!");
+
         setFormData((prevData) => ({
           ...prevData,
           photos: images,
@@ -134,11 +137,12 @@ const NewRoom = () => {
 
         setUploaded(true);
       } catch (err) {
+        toast.error("Image/s not uploaded");
         console.log(err);
       }
     } else {
       // console.log(err);
-      alert("You can upload a maximum of 5 images!");
+      toast.error("Your images need to be in a range of min 1 to max 5!");
     }
   };
 
@@ -163,22 +167,26 @@ const NewRoom = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (formData.photos.length === 0) {
-    //   console.log("UPLOAD IMAGES FIRST");
-    // } else {
-    try {
-      const res = await newRequest.post(`rooms/${formData.hostelId}`, formData, {
-        withCredentials: true,
-      });
-      console.log(res);
-    } catch (err) {
-      console.log(err);
+    if (formData.photos.length === 0) {
+      toast.error("Upload Hostel Images first");
+    } else {
+      try {
+        const res = await newRequest.post(`rooms/${formData.hostelId}`, formData)
+        toast.success("Room Created Successfully");
+        setTimeout(() => {
+          navigate(-1);
+        }, 1000);
+        console.log(res);
+      } catch (err) {
+        toast.error("Room not created");
+        console.log(err);
+      }
     }
-    // }
   };
 
   return (
     <div className="new">
+      <ToastContainer />
       <Sidebar />
       <div className="newContainer">
         <Navbar />
@@ -315,8 +323,8 @@ const NewRoom = () => {
                 </label>
 
                 <label>
-                  Room Numbers:
-                  <input type="text" name="roomNumber" value={formData.roomNumber} onChange={handleChange} />
+                  Room Number:
+                  <input type="number" name="roomNumber" value={formData.roomNumber} onChange={handleChange} />
                 </label>
               </div>
 

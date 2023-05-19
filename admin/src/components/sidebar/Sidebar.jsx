@@ -12,12 +12,13 @@ import SettingsSystemDaydreamOutlinedIcon from "@mui/icons-material/SettingsSyst
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import ChatIcon from "@mui/icons-material/Chat";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive"
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import { Link } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
 
 const Sidebar = () => {
+  const user = JSON.parse(localStorage.getItem("user")) || null;
   const { dispatch } = useContext(DarkModeContext);
   return (
     <div className="sidebar">
@@ -29,45 +30,59 @@ const Sidebar = () => {
       <hr />
       <div className="center">
         <ul>
-          <p className="title">MAIN</p>
+          {/* <p className="title">MAIN</p>
           <Link to="/" style={{ textDecoration: "none" }}>
-            <li>
+            <li
               <DashboardIcon className="icon" />
               <span>Dashboard</span>
             </li>
-          </Link>
+          </Link> */}
           <p className="title">LISTS</p>
-          <Link to="/users" style={{ textDecoration: "none" }}>
+          {user.type === "admin" && (
+            <Link to="/users" style={{ textDecoration: "none" }}>
+              <li>
+                <PersonOutlineIcon className="icon" />
+                <span>Users</span>
+              </li>
+            </Link>
+          )}
+          {/* <Link to="/users" style={{ textDecoration: "none" }}>
             <li>
               <PersonOutlineIcon className="icon" />
               <span>Users</span>
             </li>
-          </Link>
+          </Link> */}
+
           <Link to="/hostels" style={{ textDecoration: "none" }}>
             <li>
               <StoreIcon className="icon" />
               <span>Hostels</span>
             </li>
           </Link>
+
           <Link to="/rooms" style={{ textDecoration: "none" }}>
             <li>
               <CreditCardIcon className="icon" />
               <span>Rooms</span>
             </li>
           </Link>
-          <Link to="/pending" style={{ textDecoration: "none" }}>
-            <li>
-              <NotificationsActiveIcon className="icon" />
-              <span>Room Queries</span>
-            </li>
-          </Link>
-          <Link to="/messages" style={{ textDecoration: "none" }}>
-            <li>
-              {/* <LocalShippingIcon className="icon" /> */}
-              <ChatIcon className="icon" />
-              <span>Chats</span>
-            </li>
-          </Link>
+          {user.type !== "admin" && (
+            <>
+              <Link to="/pending" style={{ textDecoration: "none" }}>
+                <li>
+                  <NotificationsActiveIcon className="icon" />
+                  <span>Room Queries</span>
+                </li>
+              </Link>
+              <Link to="/messages" style={{ textDecoration: "none" }}>
+                <li>
+                  {/* <LocalShippingIcon className="icon" /> */}
+                  <ChatIcon className="icon" />
+                  <span>Chats</span>
+                </li>
+              </Link>
+            </>
+          )}
           {/* <p className="title">USEFUL</p>
           <li>
             <InsertChartIcon className="icon" />

@@ -9,7 +9,7 @@ const Login = () => {
   const [credentials, setCredentials] = useState({
     username: undefined,
     password: undefined,
-    type: "owner",
+    type: ""
   });
 
   const { loading, error, dispatch } = useContext(AuthContext);
@@ -24,15 +24,16 @@ const Login = () => {
     e.preventDefault();
     dispatch({ type: "LOGIN_START" });
     try {
-
       const res = await axios.post("http://localhost:8800/api/auth/login", credentials, {
         withCredentials: true,
       });
-
       console.log(res);
 
       if (res.data.type !== "user") {
-        dispatch({ type: "LOGIN_SUCCESS", payload: res.data.details });
+         dispatch({
+           type: "LOGIN_SUCCESS",
+           payload: { details: res.data.details, type: res.data.type },
+         });
 
         navigate("/");
       } else {
@@ -51,6 +52,12 @@ const Login = () => {
       <form className="lContainer" onSubmit={handleClick}>
         <input type="text" placeholder="username" id="username" onChange={handleChange} className="lInput" required />
         <input type="password" placeholder="password" id="password" onChange={handleChange} className="lInput" required />
+        <select id="type" value={credentials.type} onChange={handleChange} required>
+          <option value="">Select your Role</option>
+          <option value="admin">Admin</option>
+          <option value="owner">Owner</option>
+          <option value="manager">Manager</option>
+        </select>
         <button type="submit" disabled={loading} className="lButton">
           Login
         </button>

@@ -35,6 +35,26 @@ function App() {
     return children;
   };
 
+  const AdminProtectedRoute = ({ children }) => {
+    const { user } = useContext(AuthContext);
+
+    if (!user || user.type !== "admin") {
+      return <div>You are not authorized to access this page.</div>;
+    }
+
+    return children;
+  };
+
+  const OwnerProtectedRoute = ({ children }) => {
+    const { user } = useContext(AuthContext);
+
+    if (!user || user.type === "admin") {
+      return <div>You are not authorized to access this page.</div>;
+    }
+
+    return children;
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <div className={darkMode ? "app dark" : "app"}>
@@ -45,7 +65,9 @@ function App() {
                 path="pending"
                 element={
                   <ProtectedRoute>
-                    <PendingRooms />
+                    <OwnerProtectedRoute>
+                      <PendingRooms />
+                    </OwnerProtectedRoute>
                   </ProtectedRoute>
                 }
               />
@@ -54,7 +76,9 @@ function App() {
                 path="messages"
                 element={
                   <ProtectedRoute>
-                    <Messages />
+                    <OwnerProtectedRoute>
+                      <Messages />
+                    </OwnerProtectedRoute>
                   </ProtectedRoute>
                 }
               />
@@ -63,26 +87,33 @@ function App() {
                 path="message/:id"
                 element={
                   <ProtectedRoute>
-                    <Message />
+                    <OwnerProtectedRoute>
+                      <Message />
+                    </OwnerProtectedRoute>
                   </ProtectedRoute>
                 }
               />
 
               <Route path="login" element={<Login />} />
-              <Route
+              {/* <Route
                 index
                 element={
                   <ProtectedRoute>
                     <Home />
                   </ProtectedRoute>
                 }
-              />
+              /> */}
+
+              <Route path="/" element={<Navigate to="/hostels" replace />} />
+
               <Route path="users">
                 <Route
                   index
                   element={
                     <ProtectedRoute>
-                      <List columns={userColumns} />
+                      <AdminProtectedRoute>
+                        <List columns={userColumns} />
+                      </AdminProtectedRoute>
                     </ProtectedRoute>
                   }
                 />
@@ -90,7 +121,9 @@ function App() {
                   path=":userId"
                   element={
                     <ProtectedRoute>
-                      <Single />
+                      <AdminProtectedRoute>
+                        <Single />
+                      </AdminProtectedRoute>
                     </ProtectedRoute>
                   }
                 />
@@ -98,7 +131,9 @@ function App() {
                   path="new"
                   element={
                     <ProtectedRoute>
-                      <New inputs={userInputs} title="Add New User" />
+                      <AdminProtectedRoute>
+                        <New inputs={userInputs} title="Add New User" />
+                      </AdminProtectedRoute>
                     </ProtectedRoute>
                   }
                 />
@@ -106,13 +141,16 @@ function App() {
                   path="update/:id"
                   element={
                     <ProtectedRoute>
-                      <UpdateUser inputs={userInputs} title="Update User Info" />
+                      <AdminProtectedRoute>
+                        <UpdateUser inputs={userInputs} title="Update User Info" />
+                      </AdminProtectedRoute>
                     </ProtectedRoute>
                   }
                 />
               </Route>
               <Route path="hostels">
                 <Route
+                  // index
                   index
                   element={
                     <ProtectedRoute>

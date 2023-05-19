@@ -55,7 +55,14 @@ export const getSingleConversation = async (req, res, next) => {
 
 export const getConversations = async (req, res, next) => {
   try {
-    const conversations = await Conversation.find(req.user.isSeller ? { sellerId: req.user.id } : { buyerId: req.user.id }).sort({ updatedAt: -1 });
+    const conversations = await Conversation.find(req.user.isSeller ? { sellerId: req.user.id } : { buyerId: req.user.id })
+      // .populate("sellerId", "username")
+      // .populate("buyerId", "username")
+      .sort({ updatedAt: -1 })
+    console.log(conversations);
+
+    console.log("MASHALLAH");
+    console.log(req.user);
     res.status(200).send(conversations);
   } catch (err) {
     next(err);

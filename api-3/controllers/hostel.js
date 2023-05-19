@@ -60,7 +60,7 @@ export const getHostel = async (req, res, next) => {
   try {
     const hostel = await Hostel.findById(req.params.id).populate("rooms");
     if (!hostel) {
-      return res.status(404).json({ message: "hostel not found" });
+      return res.status(404).json({ message: "No hostel founded!" });
     }
     res.status(200).json(hostel);
   } catch (err) {
@@ -68,19 +68,49 @@ export const getHostel = async (req, res, next) => {
   }
 };
 export const getHostels = async (req, res, next) => {
-  const { min, max, ...others } = req.query;
-  try {
-    let Hostels;
+  console.log("OWNER OR MAANGER");
+  if (req.user.type === "owner" || req.user.type === "manager") {
+    try {
+      const hostel = await Hostel.find({
+        $or: [{ createdBy: req.user.id }, { managerId: req.user.id }],
+      }).populate("rooms");
+      if (!hostel) {
+        return res.status(404).json({ message: "No hostel founded!" });
+      }
+      return res.status(200).json(hostel);
+    } catch (err) {
+      return next(err);
+    }
+  }
 
-    Hostels = await Hostel.find({
-      ...others,
-      cheapestPrice: { $gte: min || 1, $lte: max || 9999999 },
-    }).limit(req.query.limit);
-    res.status(200).json(Hostels);
+
+  console.log("NOT OWNER OR MAANGER");
+  try {
+    const hostel = await Hostel.find().populate("rooms");
+    if (!hostel) {
+      return res.status(404).json({ message: "No hostel founded!" });
+    }
+    res.status(200).json(hostel);
   } catch (err) {
     next(err);
   }
 };
+
+// export const getHostels = async (req, res, next) => {
+//   const { min, max, ...others } = req.query;
+
+//   try {
+//     let Hostels;
+
+//     Hostels = await Hostel.find({
+//       ...others,
+//       cheapestPrice: { $gte: min || 1, $lte: max || 9999999 },
+//     }).limit(req.query.limit);
+//     res.status(200).json(Hostels);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 export const countByCity = async (req, res, next) => {
   const cities = req.query.cities.split(",");
   try {
@@ -134,4 +164,4 @@ export const getHostelsByOwner = async (req, res) => {
 };
 
 // <feature:0>  LOCATION </feature:0>
- // DONT FORGET TO DELTE ALSO ALL THE ROOMS when delteing hostel
+// DONT FORGET TO DELTE ALSO ALL THE ROOMS when delteing hostel

@@ -5,9 +5,13 @@ import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUpload
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "../../utils/toast";
+
 
 import upload from "../../utils/upload";
 import newRequest from "../../utils/newRequest";
+
+// toast.configure();
 
 const New = ({ inputs, title }) => {
   // const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
@@ -42,7 +46,6 @@ const New = ({ inputs, title }) => {
     getHostels();
   }, []);
 
-  
   const [info, setInfo] = useState({
     username: "",
     password: "",
@@ -71,6 +74,7 @@ const New = ({ inputs, title }) => {
 
   const handleClick = async (e) => {
     e.preventDefault();
+
     setLoading(true);
     // const data = new FormData();
     // data.append("file", file);
@@ -90,14 +94,16 @@ const New = ({ inputs, title }) => {
 
       // await axios.post(`${BASE_URL}/auth/register`, newUser);
 
-      const res = await newRequest.post("auth/register", newUser, {
-        withCredentials: true,
-      });
+      const res = await newRequest.post("auth/register", newUser);
 
-      navigate("/users");
+      toast.success("User Created Successfully");
+      setTimeout(() => {
+        navigate(-1);
+      }, 1000);
       setLoading(false);
     } catch (err) {
       console.log(err);
+      toast.error(`${err.response.data.message}`);
       if (err.response.data.message === "Email is already taken") {
         setEmailError("Email is already taken");
         setUsernameError("");
@@ -202,6 +208,7 @@ const New = ({ inputs, title }) => {
   // console.log(info);
   return (
     <div className="new">
+      <ToastContainer />
       <Sidebar />
       <div className="newContainer">
         <Navbar />

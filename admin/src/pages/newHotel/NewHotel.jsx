@@ -6,6 +6,7 @@ import { useState } from "react";
 import { hotelInputs } from "../../formSource";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
+import { toast, ToastContainer } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
 
 // CREATE COMP
@@ -15,14 +16,14 @@ import upload from "../../utils/upload";
 import newRequest from "../../utils/newRequest";
 
 const NewHotel = () => {
-  const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
+  // const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
   // const [files, setFiles] = useState("");
   const [info, setInfo] = useState({});
   const [rooms, setRooms] = useState([]);
   const [fetching, setFetching] = useState(false);
   const navigate = useNavigate();
 
-  const { data, loading, error } = useFetch(`${BASE_URL}/rooms`);
+  // const { data, loading, error } = useFetch(`${BASE_URL}/rooms`);
 
   // const handleChange = (e) => {
   //   setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -129,7 +130,8 @@ const NewHotel = () => {
     pets_allowed: false,
   });
 
-  const handleUpload = async () => {
+  const handleUpload = async (e) => {
+    e.preventDefault();
     if (files.length > 0 && files.length <= 3) {
       setUploading(true);
 
@@ -140,6 +142,8 @@ const NewHotel = () => {
             return url;
           })
         );
+
+        toast.success("Image/s Uploaded successfully!");
         setUploading(false);
 
         setFormData((prevData) => ({
@@ -149,10 +153,11 @@ const NewHotel = () => {
 
         setUploaded(true);
       } catch (err) {
+        toast.error("Image/s not uploaded");
         console.log(err);
       }
     } else {
-      alert("You files need to be in a range of min 0 to max 3!");
+      toast.error("Your images need to be in a range of min 1 to max 3!");
     }
   };
 
@@ -268,34 +273,31 @@ const NewHotel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (formData.photos.length === 0) {
-    //   console.log("UPLOAD IMAGES FIRST");
-    // } else {
-    const data = {
-      ...formData,
-      general_facilities: facilities,
-    };
-    console.log(data);
-    try {
-      // newRequest.post("/reviews", review);
-      const res = await newRequest.post(
-        "hostels",
-        data
-        // , {
-        //   withCredentials: true
-        // }
-      );
-      console.log(res);
-      // console.log(res.data);
-    } catch (err) {
-      console.log(err);
-      // console.log(err.response.data);
+    if (formData.photos.length === 0) {
+      toast.error("Upload Hostel Images first");
+    } else {
+      const data = {
+        ...formData,
+        general_facilities: facilities,
+      };
+      console.log(data);
+      try {
+        const res = await newRequest.post("hostels", data);
+        toast.success("Hostel Created");
+        setTimeout(() => {
+          navigate("/hostels");
+        }, 1000);
+      } catch (err) {
+        console.log(err);
+        toast.error("Hostel is not created");
+      }
     }
-    // }
   };
 
   return (
     <div className="new">
+      <ToastContainer />
+
       <Sidebar />
       <div className="newContainer">
         <Navbar />
@@ -598,9 +600,8 @@ const NewHotel = () => {
                 </div>
 
                 <div>
-                  <button type="submit" disabled={formData.photos.length === 0}>
-                    SUBMIT THE FORM
-                  </button>
+                  {/* <button type="submit" disabled={formData.photos.length === 0}> */}
+                  <button type="submit">SUBMIT THE FORM</button>
                 </div>
               </form>
             </div>

@@ -4,6 +4,9 @@ import { userColumns } from "../../datatablesource.jsx";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState, useLayoutEffect } from "react";
 import useFetch from "../../hooks/useFetch";
+import newRequest from "../../utils/newRequest";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 const Datatable = ({ columns }) => {
@@ -35,7 +38,9 @@ const Datatable = ({ columns }) => {
   useEffect(() => {
     if (path === "rooms") {
       const getHostels = async () => {
-        const res = await axios.get(`${URL}/hostels`);
+        const res = await newRequest.get(`${URL}/hostels`, {
+          withCredentials: true
+        });
         console.log("setting hostels");
         setHostels(res.data);
         console.log(res.data);
@@ -57,17 +62,13 @@ const Datatable = ({ columns }) => {
   useEffect(() => {
     if (path === "rooms" && hostel.id) {
       const getHostel = async () => {
-        const res = await axios.get(`${URL}/hostels/find/${hostel.id}`);
+        const res = await newRequest.get(`${URL}/hostels/find/${hostel.id}`);
         setList(res.data.rooms);
         setDataLoaded(true);
       };
       getHostel();
     }
   }, [path, hostel.id]);
-
-  useEffect(() => {
-    console.log("HOSTEL CHANGED");
-  }, [hostel.id]);
 
   useEffect(() => {
     if (path !== "rooms") {
@@ -90,7 +91,7 @@ const Datatable = ({ columns }) => {
 
       const url = path !== "rooms" ? `${URL}/${path}/${id}` : `${URL}/${path}/${id}/${hostelId}`;
 
-      const res = await axios.delete(url, {
+      const res = await newRequest.delete(url, {
         withCredentials: true,
       });
       // await axios.delete(`${URL}/${path}/${id}`);
@@ -107,9 +108,9 @@ const Datatable = ({ columns }) => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to="/users/test" style={{ textDecoration: "none" }}>
+            {/* <Link to="/users/test" style={{ textDecoration: "none" }}>
               <div className="viewButton">View</div>
-            </Link>
+            </Link> */}
             <Link to={`/${path}/update/${params.row._id}`} style={{ textDecoration: "none" }}>
               <div className="updateButton">Update</div>
             </Link>
@@ -125,6 +126,7 @@ const Datatable = ({ columns }) => {
 
   return (
     <>
+      <ToastContainer />
       <div className="datatable">
         {path === "rooms" && (
           <div>

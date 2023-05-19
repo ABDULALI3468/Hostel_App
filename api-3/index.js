@@ -8,6 +8,9 @@ import roomsRoute from "./routes/rooms.js";
 import messageRoute from "./routes/message.route.js";
 import conversationsRoute from "./routes/conversation.route.js";
 import cookieParser from "cookie-parser";
+
+import Conversation from "./models/conversation.model.js";
+
 import cors from "cors";
 
 const app = express();
@@ -53,6 +56,19 @@ app.use((err, req, res, next) => {
     stack: err.stack,
   });
 });
+
+// async function updateConversations() {
+//   const conversations = await Conversation.find();
+//   for (const conversation of conversations) {
+//     conversation.sellerId = mongoose.Types.ObjectId(conversation.sellerId);
+//     conversation.buyerId = mongoose.Types.ObjectId(conversation.buyerId);
+//     await conversation.save();
+//   }
+//   console.log("Conversations updated successfully");
+//   mongoose.disconnect();
+// }
+
+// updateConversations();
 
 app.listen(PORT, () => {
   connect();

@@ -36,6 +36,16 @@
           }
         }
 
+        .userInfo {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          color: gray;
+          font-weight: 300;
+          text-decoration: underline;
+        }
+
         img {
           width: 40px;
           height: 40px;
@@ -73,7 +83,7 @@
         border-radius: 10px;
       }
 
-      button{
+      button {
         background-color: #1dbf73;
         padding: 20px;
         color: white;
