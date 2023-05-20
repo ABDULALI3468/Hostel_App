@@ -1,9 +1,13 @@
 .message {
   display: flex;
   justify-content: center;
+
   .container {
-    width: 1200px;
+    // width: 1200px;
+    width: auto;
     margin: 50px;
+    // margin-left: 200px;
+
     .breadcrumbs {
       font-weight: 300;
       font-size: 13px;

@@ -43,6 +43,7 @@
 
           .details {
             display: flex;
+            flex-direction: column;
             flex-wrap: wrap;
             gap: 20px;
 
@@ -51,20 +52,20 @@
               justify-content: space-around;
             }
 
-            label,
-            select {
-              display: flex;
-              flex-direction: column;
-            }
+            // label,
+            // select {
+            //   display: flex;
+            //   flex-direction: column;
+            // }
 
             label {
               margin: 2rem;
               width: calc(50% - 5rem);
             }
 
-            select {
-              width: 100%;
-            }
+            // select {
+            //   width: 100%;
+            // }
 
             // .details:nth-child(even) {
             //   justify-self: flex-end;

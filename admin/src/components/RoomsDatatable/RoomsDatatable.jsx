@@ -9,7 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
-const Datatable = ({ columns }) => {
+const RoomsDatatable = ({ columns }) => {
   const URL = "http://localhost:8800/api";
   const location = useLocation();
   const path = location.pathname.split("/")[1];
@@ -19,16 +19,43 @@ const Datatable = ({ columns }) => {
     id: "",
     name: "",
   });
+
+  console.log(hostel);
   const [list, setList] = useState([]);
   const [dataLoaded, setDataLoaded] = useState(false);
 
-  let { data, loading, error } = useFetch(`${URL}/${path}`);
-  console.log(data);
+  useEffect(() => {
+    const getHostels = async () => {
+      const res = await newRequest.get(`${URL}/hostels`, {
+        withCredentials: true,
+      });
+      console.log("setting hostels");
+      setHostels(res.data);
+      console.log(res.data);
+      setDataLoaded(true);
+    };
+    getHostels();
+  }, []);
 
   useEffect(() => {
-    setList(data);
-  }, [data]);
+    if (hostels && hostels.length > 0 && !hostel.id) {
+      setHostel({
+        id: `${hostels?.[0]._id}`,
+        name: `${hostels?.[0].name}`,
+      });
+    }
+  }, [path, hostels, hostel.id]);
 
+  useEffect(() => {
+    if (hostel.id) {
+      const getHostel = async () => {
+        const res = await newRequest.get(`${URL}/hostels/find/${hostel.id}`);
+        setList(res.data.rooms);
+        setDataLoaded(true);
+      };
+      getHostel();
+    }
+  }, [hostel.id]);
 
   console.log(list);
 
@@ -81,6 +108,21 @@ const Datatable = ({ columns }) => {
     <>
       <ToastContainer />
       <div className="datatable">
+        <div>
+          <h1 className="heading">Select Rooms with respect to specific Hostel</h1>
+          {hostels && (
+            <select onChange={handleChange}>
+              <option value="">Select Hostel!</option>
+              {hostels?.map((hostel, index) => {
+                return (
+                  <option key={hostel._id} value={hostel._id} defaultValue={index === 1}>
+                    {hostel.name}
+                  </option>
+                );
+              })}
+            </select>
+          )}
+        </div>
 
         <div className="datatableTitle">
           {path}
@@ -88,10 +130,11 @@ const Datatable = ({ columns }) => {
             Add New
           </Link>
         </div>
-        {loading ? <p>Loading...</p> : list && <DataGrid className="datagrid" rows={list ? list : []} columns={columns.concat(actionColumn)} pageSize={9} rowsPerPageOptions={[9]} checkboxSelection getRowId={(row) => row?._id} />}
+
+        {list && <DataGrid className="datagrid" rows={list ? list : []} columns={columns.concat(actionColumn)} pageSize={9} rowsPerPageOptions={[9]} checkboxSelection getRowId={(row) => row?._id} />}
       </div>
     </>
   );
 };
 
-export default Datatable;
+export default RoomsDatatable;

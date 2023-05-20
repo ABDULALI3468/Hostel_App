@@ -132,7 +132,7 @@ const NewHotel = () => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (files.length > 0 && files.length <= 3) {
+    if ((files.length > 0 && files.length <= 3) && (formData.photos.length !== 3)) {
       setUploading(true);
 
       try {
@@ -148,7 +148,7 @@ const NewHotel = () => {
 
         setFormData((prevData) => ({
           ...prevData,
-          photos: images,
+          photos: [...prevData.photos, ...images],
         }));
 
         setUploaded(true);
@@ -390,7 +390,7 @@ const NewHotel = () => {
                       Photos:
                       <input type="file" name="photos" multiple onChange={(e) => setFiles(e.target.files)} />
                     </label>
-                    <button disabled={uploading || uploaded} type="submit" onClick={handleUpload}>
+                    <button type="submit" onClick={handleUpload}>
                       UPLOAD PHOTOS
                     </button>
                   </div>

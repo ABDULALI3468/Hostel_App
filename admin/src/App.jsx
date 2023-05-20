@@ -28,12 +28,20 @@ function App() {
   const ProtectedRoute = ({ children }) => {
     const { user } = useContext(AuthContext);
 
-    if (!user) {
+    const accessToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("access_token="))
+      ?.split("=")[1];
+
+    console.log(accessToken);
+
+    if (!user || !accessToken) {
       return <Navigate to="/login" />;
     }
 
     return children;
   };
+
 
   const AdminProtectedRoute = ({ children }) => {
     const { user } = useContext(AuthContext);

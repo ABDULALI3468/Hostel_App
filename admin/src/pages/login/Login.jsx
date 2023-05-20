@@ -2,6 +2,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import { toast, ToastContainer } from "../../utils/toast";
 import "./login.scss";
 
 const Login = () => {
@@ -9,7 +10,7 @@ const Login = () => {
   const [credentials, setCredentials] = useState({
     username: undefined,
     password: undefined,
-    type: ""
+    type: "",
   });
 
   const { loading, error, dispatch } = useContext(AuthContext);
@@ -30,13 +31,19 @@ const Login = () => {
       console.log(res);
 
       if (res.data.type !== "user") {
-         dispatch({
-           type: "LOGIN_SUCCESS",
-           payload: { details: res.data.details, type: res.data.type },
-         });
+        dispatch({
+          type: "LOGIN_SUCCESS",
+          payload: { details: res.data.details, type: res.data.type },
+        });
 
-        navigate("/");
+        toast.success("Log In successfull!");
+
+        setTimeout(() => {
+          navigate("/hostels");
+        }, 1000);
       } else {
+        toast.error("You are not allowed!");
+
         dispatch({
           type: "LOGIN_FAILURE",
           payload: { message: "You are not allowed!" },
@@ -44,11 +51,13 @@ const Login = () => {
       }
     } catch (err) {
       dispatch({ type: "LOGIN_FAILURE", payload: err.response });
+      toast.error(err.response.data.message);
     }
   };
 
   return (
     <div className="login">
+      <ToastContainer />
       <form className="lContainer" onSubmit={handleClick}>
         <input type="text" placeholder="username" id="username" onChange={handleChange} className="lInput" required />
         <input type="password" placeholder="password" id="password" onChange={handleChange} className="lInput" required />
