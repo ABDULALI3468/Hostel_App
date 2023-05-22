@@ -6,6 +6,7 @@ import newRequest from "../../utils/newRequest";
 import axios from "axios";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { toast, ToastContainer } from "../../utils/toast";
 
 const Signup = ({ inputs, title }) => {
   // const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
@@ -236,6 +237,8 @@ const Signup = ({ inputs, title }) => {
 
   return (
     <div className="login">
+      <ToastContainer />
+
       <form className="lContainer" onSubmit={handleClick}>
         {/* <div>
           <div className="left">

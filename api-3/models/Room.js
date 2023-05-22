@@ -3,7 +3,7 @@ const RoomSchema = new mongoose.Schema(
   {
     hostelId: {
       type: String,
-      required: true,
+      // required: true,
     },
     name: {
       type: String,

@@ -68,8 +68,14 @@ export const getHostel = async (req, res, next) => {
   }
 };
 export const getHostels = async (req, res, next) => {
-  console.log("OWNER OR MAANGER");
+  // const { min, max, ...others } = req.query;
+  const { city } = req.query;
+
+  console.log(city);
+  console.log(req.query);
+
   if (req.user.type === "owner" || req.user.type === "manager") {
+    console.log("OWNER OR MAANGER");
     try {
       const hostel = await Hostel.find({
         $or: [{ createdBy: req.user.id }, { managerId: req.user.id }],
@@ -83,16 +89,22 @@ export const getHostels = async (req, res, next) => {
     }
   }
 
-
-  console.log("NOT OWNER OR MAANGER");
-  try {
-    const hostel = await Hostel.find().populate("rooms");
-    if (!hostel) {
-      return res.status(404).json({ message: "No hostel founded!" });
+  if (req.user.type === "admin" || req.user.type === "user") {
+    console.log("NOT OWNER OR MAANGER");
+    try {
+      const hostel = await Hostel.find({
+        city,
+        // cheapestPrice: { $gte: min || 1, $lte: max || 9999999 },
+      })
+        .limit(req.query.limit)
+        .populate("rooms");
+      if (!hostel) {
+        return res.status(404).json({ message: "No hostel founded!" });
+      }
+      res.status(200).json(hostel);
+    } catch (err) {
+      next(err);
     }
-    res.status(200).json(hostel);
-  } catch (err) {
-    next(err);
   }
 };
 

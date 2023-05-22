@@ -27,6 +27,7 @@ router.put("/availability/:id", updateRoomAvailability);
 router.put("/:id", verifyToken, updateRoom);
 router.delete("/:id/:hotelid", verifyToken, deleteRoom);
 router.get("/:id", getRoom);
-router.get("/", getRooms);
+// router.get("/:id",verifyToken, getRooms);
+router.get("/getHostelRooms/:id",verifyToken, getRooms);
 
 export default router;

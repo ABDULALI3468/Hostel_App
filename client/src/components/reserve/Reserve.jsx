@@ -8,49 +8,34 @@ import { SearchContext } from "../../context/SearchContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import newRequest from "../../utils/newRequest";
+import { toast, ToastContainer } from "../../utils/toast";
 
 const Reserve = ({ setOpen, hotelId }) => {
-  // const URL = "https://booking-com-api-o1kq.onrender.com/api";
-
   const [selectedRooms, setSelectedRooms] = useState([]);
   const { data, loading, error } = useFetch(`rooms/getHostelRooms/${hotelId}`);
   const { data: hotelData } = useFetch(`hostels/find/${hotelId}`);
 
-
   const navigate = useNavigate();
-  // const { dates } = useContext(SearchContext);
-
-  // const getDatesInRange = (startDate, endDate) => {
-  //   const start = new Date(startDate);
-  //   const end = new Date(endDate);
-
-  //   const date = new Date(start.getTime());
-
-  //   const dates = [];
-
-  //   while (date <= end) {
-  //     dates.push(new Date(date).getTime());
-  //     date.setDate(date.getDate() + 1);
-  //   }
-
-  //   return dates;
-  // };
-
-  // const alldates = getDatesInRange(dates[0]?.startDate, dates[0]?.endDate);
 
   console.log(selectedRooms);
 
   const handleClick = async () => {
     try {
       await newRequest.post(`rooms/bookroom/${selectedRooms}`);
-      setOpen(false);
-      navigate("/");
+      toast.success("Booking request send to Hostel Manger/Owner");
+      setTimeout(() => {
+        setOpen(false);
+        navigate("/");
+      }, 1000);
     } catch (err) {
+      toast.error(err.response.data.error);
+      toast.error("Unfortunately, Room is not booked");
       console.log(err);
     }
   };
   return (
     <div className="reserve">
+      <ToastContainer />
       <div className="rContainer">
         <FontAwesomeIcon icon={faCircleXmark} className="rClose" onClick={() => setOpen(false)} />
         <span>Select your rooms:</span>
@@ -65,7 +50,6 @@ const Reserve = ({ setOpen, hotelId }) => {
               <div className="rPrice">Rs-/{item.price}</div>
             </div>
             <div className="rSelectRooms">
-              {/* {item?.roomNumbers?.map((roomNumber, index) => ( */}
               {item.roomNumber && (
                 <div className="room">
                   <label>{item.roomNumber}</label>
@@ -73,7 +57,6 @@ const Reserve = ({ setOpen, hotelId }) => {
                   {/* <input required type="checkbox" onChange={handleSelect} disabled={!isAvailable(item.roomNumber)} /> */}
                 </div>
               )}
-              {/* ))} */}
             </div>
           </div>
         ))}

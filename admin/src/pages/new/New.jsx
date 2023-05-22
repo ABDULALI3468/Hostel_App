@@ -7,7 +7,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "../../utils/toast";
 
-
 import upload from "../../utils/upload";
 import newRequest from "../../utils/newRequest";
 
@@ -86,21 +85,17 @@ const New = ({ inputs, title }) => {
 
       const newUser = {
         ...info,
-        // // ...formData,
-        // type: "owner",
       };
 
       console.log(newUser);
 
-      // await axios.post(`${BASE_URL}/auth/register`, newUser);
-
       const res = await newRequest.post("auth/register", newUser);
 
       toast.success("User Created Successfully");
+      setLoading(false);
       setTimeout(() => {
         navigate(-1);
       }, 1000);
-      setLoading(false);
     } catch (err) {
       console.log(err);
       toast.error(`${err.response.data.message}`);
@@ -307,7 +302,6 @@ const New = ({ inputs, title }) => {
                       {city}
                     </option>
                   ))}
-                  ``
                 </select>
               </div>
 

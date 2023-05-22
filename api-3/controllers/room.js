@@ -5,6 +5,8 @@ import { createError } from "../utils/error.js";
 
 export const createRoom = async (req, res, next) => {
   const hostelId = req.params.hostelId;
+  console.log("hostelId");
+  console.log(hostelId);
   const newRoom = new Room({
     hostelId,
     ...req.body,
@@ -82,8 +84,9 @@ export const getRoom = async (req, res, next) => {
   }
 };
 export const getRooms = async (req, res, next) => {
+  console.log(req.params.id);
   try {
-    const rooms = await Room.find();
+    const rooms = await Room.find({ hostelId: req.params.id });
     res.status(200).json(rooms);
   } catch (err) {
     next(err);
@@ -122,7 +125,6 @@ export const bookRoom = async (req, res) => {
   const updatedRoom = await Room.updateOne({ _id: req.params.id }, { $push: { status: { status: "pending", userId: userId } } });
   res.json(updatedRoom);
 };
-
 export const getPendingRooms = async (req, res) => {
   const userId = req.user.id;
 
@@ -157,6 +159,7 @@ export const getPendingRooms = async (req, res) => {
 };
 export const getUserRooms = async (req, res) => {
   const userId = req.user.id;
+  console.log(userId);
 
   try {
     const rooms = await Room.find({
@@ -170,7 +173,6 @@ export const getUserRooms = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
-
 // export const approvePendingRequest = async (req, res) => {
 //   const roomId = req.params.id;
 //   const userId = req.body.userId;
@@ -209,7 +211,6 @@ export const getUserRooms = async (req, res) => {
 
 // 1- STATUS : FROM NOT-BOOKED ------> PEN`DING
 // 2-
-
 export const approvePendingRequest = async (req, res) => {
   const roomId = req.params.id;
   const userId = req.body.userId;

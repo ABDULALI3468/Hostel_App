@@ -33,6 +33,8 @@ mongoose.connection.on("disconnected", () => {
 
 //middlewares
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// app.use(cors({ origin: "http://localhost:5174", credentials: true }));
+// app.use(cors({ credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 
@@ -57,18 +59,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// async function updateConversations() {
-//   const conversations = await Conversation.find();
-//   for (const conversation of conversations) {
-//     conversation.sellerId = mongoose.Types.ObjectId(conversation.sellerId);
-//     conversation.buyerId = mongoose.Types.ObjectId(conversation.buyerId);
-//     await conversation.save();
-//   }
-//   console.log("Conversations updated successfully");
-//   mongoose.disconnect();
-// }
-
-// updateConversations();
 
 app.listen(PORT, () => {
   connect();

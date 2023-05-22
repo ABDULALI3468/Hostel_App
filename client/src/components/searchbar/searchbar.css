@@ -130,3 +130,9 @@
 .optionCounterButton:disabled {
   cursor: not-allowed;
 }
+
+select {
+  border: none;
+  outline: none;
+  margin-right: 1rem;
+}
