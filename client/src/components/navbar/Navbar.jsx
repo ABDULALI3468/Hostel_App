@@ -63,6 +63,7 @@
 
 import newRequest from "../../utils/newRequest";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 const Navbar = () => {
   const [user, setUser] = useState(null);
@@ -74,7 +75,8 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
+  const handleLogout = async (e) => {
+    e.preventDefault();
     try {
       await newRequest.post("/auth/logout");
       localStorage.setItem("user", null);
@@ -129,9 +131,9 @@ const Navbar = () => {
             {!user && (
               <>
                 <li>
-                  <a className="nav-link scrollto" href="/login">
-                    Login
-                  </a>
+                  <Link to="/login" className="nav-link scrollto" style={{ textDecoration: "none" }}>
+                    Log In
+                  </Link>
                 </li>
               </>
             )}
@@ -142,6 +144,11 @@ const Navbar = () => {
                 </li>
                 <li onClick={handleLogout}>
                   <a className="nav-link scrollto">Logout</a>
+                </li>
+                <li>
+                  <Link to="/conversations" className="nav-link scrollto" style={{ textDecoration: "none" }}>
+                    Conversations
+                  </Link>
                 </li>
               </>
             )}

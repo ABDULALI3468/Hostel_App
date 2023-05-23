@@ -7,9 +7,12 @@ import Signup from "./pages/signup/Signup";
 import { productInputs, userInputs } from "./formSource.js";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
+import Conversation from "./pages/conversation/Conversation.jsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 
 function App() {
+  const queryClient = new QueryClient();
   const ProtectedRoute = ({ children }) => {
     const { user } = useContext(AuthContext);
 
@@ -28,24 +31,34 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/">
-          <Route path="/" element={<Home />} />
-          <Route path="/hostels" element={<List />} />
-          <Route
-            path="/hostels/:id"
-            element={
-              <ProtectedRoute>
-                <Hotel />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup inputs={userInputs} title="Add New User" />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/">
+            <Route path="/" element={<Home />} />
+            <Route path="/hostels" element={<List />} />
+            <Route
+              path="/hostels/:id"
+              element={
+                <ProtectedRoute>
+                  <Hotel />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/conversations"
+              element={
+                <ProtectedRoute>
+                  <Conversation />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup inputs={userInputs} title="Add New User" />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 
