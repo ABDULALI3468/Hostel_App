@@ -68,8 +68,8 @@ export const getHostel = async (req, res, next) => {
   }
 };
 export const getHostels = async (req, res, next) => {
-  // const { min, max, ...others } = req.query;
-  const { city } = req.query;
+  const { min, max, city, ...others } = req.query;
+  // const { city } = req.query;
 
   console.log(city);
   console.log(req.query);
@@ -89,15 +89,27 @@ export const getHostels = async (req, res, next) => {
     }
   }
 
-  if (req.user.type === "admin" || req.user.type === "user") {
+  if (req.user.type === "user") {
     console.log("NOT OWNER OR MAANGER");
     try {
       const hostel = await Hostel.find({
         city,
-        // cheapestPrice: { $gte: min || 1, $lte: max || 9999999 },
+        cheapestPrice: { $gte: min || 1, $lte: max || 9999999 },
       })
         .limit(req.query.limit)
         .populate("rooms");
+      if (!hostel) {
+        return res.status(404).json({ message: "No hostel founded!" });
+      }
+      res.status(200).json(hostel);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  if (req.user.type === "admin") {
+    try {
+      const hostel = await Hostel.find({}).populate("rooms");
       if (!hostel) {
         return res.status(404).json({ message: "No hostel founded!" });
       }
