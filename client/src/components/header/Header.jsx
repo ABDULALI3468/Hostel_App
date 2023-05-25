@@ -13,7 +13,7 @@ const Header = () => {
           <h1>Fast &amp; Easy Way To Rent A Room</h1>
           <p className="tagline">A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts</p>
           <a className="btn btn-full scrollto" href="#about">
-            Reserve Your Perfact Room
+            Reserve Room
           </a>
         </div>
       </div>

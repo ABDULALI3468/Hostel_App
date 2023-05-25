@@ -7,49 +7,11 @@ import axios from "axios";
 import { faFileImport } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toast, ToastContainer } from "../../utils/toast";
+import "./signup.css";
+
 
 const Signup = ({ inputs, title }) => {
-  // const BASE_URL = "https://booking-com-api-o1kq.onrender.com/api";
-  // const [file, setFile] = useState("");
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(null);
-
-  // const navigate = useNavigate();
-  // const [credentials, setCredentials] = useState({
-  //   email: undefined,
-  //   username: undefined,
-  //   password: undefined,
-  //   country: undefined,
-  //   city: undefined,
-  //   phone: undefined,
-  // });
-
-  // const handleChange = (e) => {
-  //   setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   const data = new FormData();
-  //   data.append("file", file);
-  //   data.append("upload_preset", "uploads");
-  //   try {
-  //     const uploadRes = await axios.post("https://api.cloudinary.com/v1_1/dmkegm2ts/image/upload", data);
-  //     const { url } = uploadRes.data;
-  //     const newUser = {
-  //       ...credentials,
-  //       img: url,
-  //     };
-  //     const res = await axios.post(`${BASE_URL}/auth/register`, newUser);
-  //     navigate("/login");
-  //     setLoading(false);
-  //   } catch (err) {
-  //     setLoading(false);
-  //     setError("Please consider reviewing your inputs, there seems an Error 🌋");
-  //   }
-  // };
-
+  
   const [file, setFile] = useState("");
 
   const [usernameError, setUsernameError] = useState("");
@@ -110,13 +72,9 @@ const Signup = ({ inputs, title }) => {
     e.preventDefault();
 
     setLoading(true);
-    // const data = new FormData();
-    // data.append("file", file);
-    // data.append("upload_preset", "uploads");
+    
     try {
-      // const uploadRes = await axios.post("https://api.cloudinary.com/v1_1/dmkegm2ts/image/upload", data);
-
-      // const { url } = uploadRes.data;
+    
 
       const newUser = {
         ...info,
@@ -236,66 +194,30 @@ const Signup = ({ inputs, title }) => {
   };
 
   return (
-    <div className="login">
-      <ToastContainer />
-
-      <form className="lContainer" onSubmit={handleClick}>
-        {/* <div>
-          <div className="left">
-            <img className="userImage" src={file ? URL.createObjectURL(file) : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"} alt="" />
-          </div>
-          <div className="formInput">
-            <label htmlFor="file">
-              Image: <FontAwesomeIcon style={{ color: "#939393" }} icon={faFileImport} />
-            </label>
-            <input name="img" type="file" required id="file" onChange={(e) => setFile(e.target.files[0])} />
-          </div>
-        </div> */}
-
-        {/* <div>
-          <input required name="email" type="email" placeholder="email" id="email" onChange={handleChange} className="lInput" />
-        <input required name="username" type="text" placeholder="username" id="username" onChange={handleChange} className="lInput" />
-        <input required name="password" type="password" placeholder="password" id="password" onChange={handleChange} className="lInput" />
-        <input required name="country" type="text" placeholder="country" id="country" onChange={handleChange} className="lInput" />
-        <input required name="city" type="text" placeholder="city" id="city" onChange={handleChange} className="lInput" />
-        <input required name="phone" type="text" placeholder="phone" id="phone" onChange={handleChange} className="lInput" />
-        <button type="submit" disabled={loading} className="lButton">
-          {loading ? "Loading" : "Sign UP"}
-        </button>
-        <span>
-          Alreay registerred? please consider{" "}
-          <Link to="/login" style={{ textDecoration: "none", color: "#0071c2" }}>
-            loggig in!
-          </Link>
-        </span>
-        {error && <span className="error">{error}</span>}
-        </div> */}
-
-        {inputs.map((input) => (
-          <div className="formInput" key={input.id}>
+    <div className="container-login">
+      <div className="login-box">
+        <h2>Register</h2>
+        <form onSubmit={handleClick}>
+          <div className="user-box">
+          {inputs.map((input) => (
+          <div key={input.id}>
             <label>{input.label}</label>
             <input onChange={handleChange} type={input.type} placeholder={input.placeholder} id={input.id} />
-            {/* {input.label === "Username" && <span>{usernameError}</span>}
-                  {input.label === "Email" && <span>{emailError}</span>} */}
             <span>{input.id === "username" && usernameError}</span>
             <span>{input.id === "email" && emailError}</span>
           </div>
         ))}
-
-        <div className="formInput">
-          <label>Country:</label>
-          <select name="country" id="country" value={info.country} onChange={handleChange}>
+          </div>
+          <div className="user-box">
+          <select className="select" name="country" id="country" value={info.country} onChange={handleChange}>
             <option value="">Select Country</option>
             <option value="pakistan">Pakistan</option>
           </select>
-        </div>
-
-        <div className="formInput">
-          <label>State:</label>
-          <select
+          </div><br/><br/>
+          <div className="user-box">
+          <select className="select"
             name="state"
             id="state"
-            // value={formData.state}
             value={selectedState}
             onChange={(e) => {
               handleChange(e);
@@ -312,12 +234,9 @@ const Signup = ({ inputs, title }) => {
             <option value="kpk">Khyber Pakhtunkhwa</option>
             <option value="northern areas">Northern Areas</option>
           </select>
-        </div>
-
-        <div className="formInput">
-          <label>City:</label>
-          {/* <input type="text" name="city" value={formData.city} onChange={handleChange} /> */}
-          <select name="city" id="city" value={info.city} onChange={handleChange}>
+          </div><br/><br/>
+          <div className="user-box">
+          <select name="city" id="city" className="select" value={info.city} onChange={handleChange}>
             <option value="">Select a city</option>
             {cities.map((city, index) => (
               <option key={index} value={city.toLowerCase()}>
@@ -326,15 +245,79 @@ const Signup = ({ inputs, title }) => {
             ))}
             ``
           </select>
-        </div>
+          </div>
 
-        <button>SUBMIT</button>
-
-        <button onClick={() => navigate("/")} className="lButton homebutton">
-          Home Page
-        </button>
-      </form>
+        
+          <button>SUBMIT</button>
+        </form>
+      </div>
     </div>
+
+    // <div className="login">
+    //   <ToastContainer />
+
+    //   <form className="lContainer" onSubmit={handleClick}>
+        
+    //     {inputs.map((input) => (
+    //       <div className="formInput" key={input.id}>
+    //         <label>{input.label}</label>
+    //         <input onChange={handleChange} type={input.type} placeholder={input.placeholder} id={input.id} />
+    //         {/* {input.label === "Username" && <span>{usernameError}</span>}
+    //               {input.label === "Email" && <span>{emailError}</span>} */}
+    //         <span>{input.id === "username" && usernameError}</span>
+    //         <span>{input.id === "email" && emailError}</span>
+    //       </div>
+    //     ))}
+
+    //     <div className="formInput">
+    //       <label>Country:</label>
+    //       <select name="country" id="country" value={info.country} onChange={handleChange}>
+    //         <option value="">Select Country</option>
+    //         <option value="pakistan">Pakistan</option>
+    //       </select>
+    //     </div>
+
+    //     <div className="formInput">
+    //       <label>State:</label>
+    //       <select
+    //         name="state"
+    //         id="state"
+    //         // value={formData.state}
+    //         value={selectedState}
+    //         onChange={(e) => {
+    //           handleChange(e);
+    //           handleStateChange(e);
+    //         }}
+    //       >
+    //         <option value="">Select State</option>
+    //         <option value="punjab">Punjab</option>
+    //         <option value="sindh">Sindh</option>
+    //         <option value="balochistan">Balochistan</option>
+    //         <option value="azad kashmir">Azad Kashmir</option>
+    //         <option value="fata">Federally Administered Tribal Areas (FATA)</option>
+    //         <option value="islamabad">Islamabad Capital Territory</option>
+    //         <option value="kpk">Khyber Pakhtunkhwa</option>
+    //         <option value="northern areas">Northern Areas</option>
+    //       </select>
+    //     </div>
+
+    //     <div className="formInput">
+    //       <label>City:</label>
+    //       {/* <input type="text" name="city" value={formData.city} onChange={handleChange} /> */}
+    //       <select name="city" id="city" value={info.city} onChange={handleChange}>
+    //         <option value="">Select a city</option>
+    //         {cities.map((city, index) => (
+    //           <option key={index} value={city.toLowerCase()}>
+    //             {city}
+    //           </option>
+    //         ))}
+    //         ``
+    //       </select>
+    //     </div>
+
+    //     <button>SUBMIT</button>
+    //   </form>
+    // </div>
   );
 };
 
